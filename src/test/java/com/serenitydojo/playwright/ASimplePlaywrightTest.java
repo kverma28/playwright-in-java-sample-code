@@ -4,20 +4,28 @@ import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserType;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.Playwright;
-import com.microsoft.playwright.impl.AssertionsTimeout;
 import com.microsoft.playwright.junit.UsePlaywright;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-@UsePlaywright
 public class ASimplePlaywrightTest {
+
+    Playwright playwright;
+    Browser browser;
+    Page page;
+
+
+    @BeforeEach
+    void setup() {
+        playwright = Playwright.create();
+        browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(true));
+        page = browser.newPage();
+    }
+
 
     @Test
     void shouldShowThePageTitle() {
-        Playwright playwright = Playwright.create();
-        Browser browser = playwright.chromium().launch();
-        Page page = browser.newPage();
-
         page.navigate("https://practicesoftwaretesting.com");
         String title = page.title();
 
@@ -29,10 +37,6 @@ public class ASimplePlaywrightTest {
 
     @Test
     void shouldShowSearchTermsInTheTitle() {
-        Playwright playwright = Playwright.create();
-        Browser browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(true));
-        Page page = browser.newPage();
-
         page.navigate("https://practicesoftwaretesting.com");
         page.locator("[placeholder=Search]").fill("Pliers");
         page.locator("button:has-text('Search')").click();
